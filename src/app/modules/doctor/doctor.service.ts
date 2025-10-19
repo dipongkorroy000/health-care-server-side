@@ -2,6 +2,10 @@ import { Doctor, Prisma, UserStatus } from "@prisma/client";
 import { IOptions, paginationHelper } from "../../helper/paginationHelper";
 import { prisma } from "../../shared/prisma";
 import { IDoctorUpdateInput } from "./doctor.interface";
+import ApiError from "../../errors/apiError";
+import status from "http-status";
+import { openai } from "../../helper/open-router";
+import { extractJsonFromMessage } from "../../helper/extractJsonFromMessage";
 
 const getAllFromDB = async (filters: any, options: IOptions) => {
   const { page, limit, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
@@ -108,4 +112,36 @@ const softDelete = async (id: string): Promise<Doctor> => {
   });
 };
 
-export const DoctorService = { getAllFromDB, updateIntoDB, getByIdFromDB, deleteFromDB, softDelete };
+const getAISuggestions = async (payload: { symptoms: string }) => {
+  if (!(payload && payload.symptoms)) throw new ApiError(status.BAD_REQUEST, "symptoms is required!");
+
+  const doctors = await prisma.doctor.findMany({
+    where: { isDeleted: false },
+    include: { doctorSpecialties: { include: { specialties: true } } },
+  });
+
+  const prompt = `
+  You are a medical assistant AI. Based on the patient's symptoms, suggest the top 3 most suitable doctors. 
+  Each doctor has specialties and years of experience. 
+  Only suggest doctors who are relevant to the given symptoms. 
+  Symptoms: ${payload.symptoms} Here is the doctor list (in JSON):
+  ${JSON.stringify(doctors, null, 2)} 
+  Return your response in JSON format with full individual doctor data.`;
+
+  console.log("analyzing......\n");
+
+  const completion = await openai.chat.completions.create({
+    model: "z-ai/glm-4.5-air:free",
+    messages: [
+      {
+        role: "system",
+        content: "You are a helpful AI medical assistant that provides doctor suggestions.",
+      },
+      { role: "user", content: prompt },
+    ],
+  });
+
+  return await extractJsonFromMessage(completion.choices[0]?.message);
+};
+
+export const DoctorService = { getAllFromDB, updateIntoDB, getByIdFromDB, deleteFromDB, softDelete, getAISuggestions };

@@ -15,4 +15,6 @@ router.delete("/:id", auth(UserRole.ADMIN), DoctorController.deleteFromDB);
 
 router.delete("/soft/:id", auth(UserRole.ADMIN), DoctorController.softDelete);
 
+router.post("/suggestion", DoctorController.getAISuggestions);
+
 export const doctorRoutes = router;
