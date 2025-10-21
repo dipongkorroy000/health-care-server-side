@@ -16,7 +16,7 @@ const insertIntoDB = async (payload: any) => {
   while (currentDate <= lastDate) {
     const startDateTime = new Date(
       addMinutes(
-        addHours(
+        addHours(  
           format(currentDate, "yyyy-MM-dd"),
           Number(startTime.split(":")[0]) // 11:00
         ),
@@ -85,8 +85,4 @@ const deleteScheduleFromDB = async (id: string) => {
   return await prisma.schedule.delete({ where: { id } });
 };
 
-export const ScheduleService = {
-  insertIntoDB,
-  schedulesForDoctor,
-  deleteScheduleFromDB,
-};
+export const ScheduleService = { insertIntoDB, schedulesForDoctor, deleteScheduleFromDB };

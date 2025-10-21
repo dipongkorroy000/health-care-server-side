@@ -51,6 +51,16 @@ const getAllFromDB = async (filters: any, options: IOptions) => {
   return { meta: { total, page, limit }, data: result };
 };
 
+const getByIdFromDB = async (id: string): Promise<Doctor | null> => {
+  return await prisma.doctor.findUnique({
+    where: { id, isDeleted: false },
+    include: {
+      doctorSpecialties: { include: { specialties: true } },
+      doctorSchedules: { include: { schedule: true } },
+    },
+  });
+};
+
 const updateIntoDB = async (id: string, payload: Partial<IDoctorUpdateInput>) => {
   const doctorInfo = await prisma.doctor.findUniqueOrThrow({ where: { id } });
 
@@ -76,16 +86,6 @@ const updateIntoDB = async (id: string, payload: Partial<IDoctorUpdateInput>) =>
       data: doctorData,
       include: { doctorSpecialties: { include: { specialties: true } } },
     });
-  });
-};
-
-const getByIdFromDB = async (id: string): Promise<Doctor | null> => {
-  return await prisma.doctor.findUnique({
-    where: { id, isDeleted: false },
-    include: {
-      doctorSpecialties: { include: { specialties: true } },
-      doctorSchedules: { include: { schedule: true } },
-    },
   });
 };
 

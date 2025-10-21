@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status";
 
 const globalErrorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
-  console.log(err);
+  // console.log(err);
   let status: number = err.status || httpStatus.INTERNAL_SERVER_ERROR;
   let success = false;
   let message = err.message || "Something went wrong!";
@@ -39,6 +39,11 @@ const globalErrorHandler = (err: any, req: Request, res: Response, next: NextFun
   if (err instanceof Prisma.PrismaClientInitializationError) {
     (message = "Prisma client failed to initialize!"), (error = err.message);
     status = httpStatus.BAD_REQUEST;
+  }
+  if (err instanceof Prisma.PrismaClientKnownRequestError) {
+    message = "An operation failed because it depends on one or more records that were required but not found";
+    error = err.message;
+    status = httpStatus.NOT_FOUND;
   }
 
   res.status(status).json({ success, message, error });
