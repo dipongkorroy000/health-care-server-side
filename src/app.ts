@@ -1,11 +1,12 @@
 import express, { type Application, type Express } from "express";
 import cors from "cors";
-import dotenv from "dotenv";
+// import dotenv from "dotenv";
 import config from "./config";
 import router from "./app/routes";
 import notFound from "./app/middlewares/notFound";
 import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 import cookieParser from "cookie-parser";
+import { PaymentController } from "./app/modules/payments/payment.controller";
 
 const app: Application = express();
 
@@ -13,7 +14,10 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
-dotenv.config();
+// dotenv.config();
+
+// this webhook call -> when appointment create by patient then call this webhook for payment
+app.post("/api/v1/payment/webhook", express.raw({ type: "application/json" }), PaymentController.handleStripeWebhookEvent);
 
 app.use("/api/v1", router);
 
