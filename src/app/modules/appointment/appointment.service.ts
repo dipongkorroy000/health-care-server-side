@@ -1,5 +1,5 @@
 import { prisma } from "../../shared/prisma";
-import { v4 as uuidv4 } from "uuid";
+// import { v4 as uuidv4 } from "uuid";
 import { IJWTPayload } from "../../types/reqUser";
 
 const createAppointment = async (user: IJWTPayload, payload: { doctorId: string; scheduleId: string }) => {
@@ -9,11 +9,11 @@ const createAppointment = async (user: IJWTPayload, payload: { doctorId: string;
 
   await prisma.doctorSchedules.findFirstOrThrow({ where: { doctorId: payload.doctorId, scheduleId: payload.scheduleId, isBooked: false } });
 
-  const videoCallingId = uuidv4();
+  // const videoCallingId = uuidv4();
 
   const result = await prisma.$transaction(async (tnx) => {
     const appointmentData = await tnx.appointment.create({
-      data: { patientId: patientData.id, doctorId: doctorData.id, scheduleId: payload.scheduleId, videoCallingId },
+      data: { patientId: patientData.id, doctorId: doctorData.id, scheduleId: payload.scheduleId, videoCallingId: "demo" },
     });
 
     await tnx.doctorSchedules.update({
@@ -21,9 +21,9 @@ const createAppointment = async (user: IJWTPayload, payload: { doctorId: string;
       data: { isBooked: true },
     });
 
-    const transactionId = uuidv4();
+    // const transactionId = uuidv4();
 
-    await tnx.payment.create({ data: { appointmentId: appointmentData.id, amount: doctorData.appointmentFee, transactionId } });
+    await tnx.payment.create({ data: { appointmentId: appointmentData.id, amount: doctorData.appointmentFee, transactionId: "demo" } });
 
     return appointmentData;
   });
