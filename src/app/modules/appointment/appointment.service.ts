@@ -18,7 +18,7 @@ const createAppointment = async (user: IJWTPayload, payload: { doctorId: string;
 
   const result = await prisma.$transaction(async (tnx) => {
     const appointmentData = await tnx.appointment.create({
-      data: { patientId: patientData.id, doctorId: doctorData.id, scheduleId: payload.scheduleId, videoCallingId: "demo1" },
+      data: { patientId: patientData.id, doctorId: doctorData.id, scheduleId: payload.scheduleId, videoCallingId: "demo12" },
     });
 
     await tnx.doctorSchedules.update({
@@ -28,7 +28,7 @@ const createAppointment = async (user: IJWTPayload, payload: { doctorId: string;
 
     // const transactionId = uuidv4();
 
-    await tnx.payment.create({ data: { appointmentId: appointmentData.id, amount: doctorData.appointmentFee, transactionId: "demo123" } });
+    await tnx.payment.create({ data: { appointmentId: appointmentData.id, amount: doctorData.appointmentFee, transactionId: "demo1234" } });
 
     // payment
     const session = await stripe.checkout.sessions.create({

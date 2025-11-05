@@ -47,17 +47,4 @@ const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const cancelUnpaidAppointments = catchAsync(async (req: Request, res: Response) => {
-
-  const result = await AppointmentService.cancelUnpaidAppointments()
-
-  sendResponse(res, { status: status.OK, success: true, message: "Appointment cancel successfully", data: result });
-});
-
-export const AppointmentController = {
-  createAppointment,
-  getMyAppointment,
-  updateAppointmentStatus,
-  getAllFromDB,
-  cancelUnpaidAppointments,
-};
+export const AppointmentController = { createAppointment, getMyAppointment, updateAppointmentStatus, getAllFromDB };
