@@ -22,12 +22,7 @@ const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
 const updateIntoDB = catchAsync(async (req: Request, res: Response) => {
   const result = await DoctorService.updateIntoDB(req.params.id as string, req.body);
 
-  sendResponse(res, {
-    status: 200,
-    success: true,
-    message: "Doctor updated successfully!",
-    data: result,
-  });
+  sendResponse(res, { status: 200, success: true, message: "Doctor updated successfully!", data: result });
 });
 
 const getByIdFromDB = catchAsync(async (req: Request, res: Response) => {

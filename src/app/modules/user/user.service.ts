@@ -38,12 +38,12 @@ const getAllUser = async (filters: any, options: IOptions) => {
     });
   }
 
-  // const whereConditions: Prisma.UserWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+  const whereConditions: Prisma.UserWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
 
   const result = await prisma.user.findMany({
     skip: (page - 1) * limit,
     take: limit,
-    where: { AND: andConditions },
+    where: { AND: whereConditions },
 
     orderBy: sortOrder && sortBy ? { [sortBy]: sortOrder } : { createdAt: "desc" },
 

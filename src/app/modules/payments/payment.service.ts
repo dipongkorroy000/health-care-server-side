@@ -29,7 +29,7 @@ const handleStripeWebhookEvent = async (event: Stripe.Event) => {
     }
 
     default:
-      console.log(`ℹ️ Unhandled event type: ${event.type}`);
+      console.log(`I Unhandled event type: ${event.type}`);
   }
 };
 
