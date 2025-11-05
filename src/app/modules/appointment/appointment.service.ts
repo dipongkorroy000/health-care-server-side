@@ -89,6 +89,9 @@ const getMyAppointment = async (user: IJWTPayload, filters: any, options: IOptio
   return { meta: { total, limit, page }, data: result };
 };
 
+// task get all data from db (appointment data)- admin
+
+
 const updateAppointmentStatus = async (appointmentId: string, status: AppointmentStatus, user: IJWTPayload) => {
   const appointmentData = await prisma.appointment.findUniqueOrThrow({ where: { id: appointmentId }, include: { doctor: true } });
 
