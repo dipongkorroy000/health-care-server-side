@@ -4,6 +4,7 @@ import { AppointmentService } from "./appointment.service";
 import sendResponse from "../../shared/sendResponse";
 import { IJWTPayload } from "../../types/reqUser";
 import pick from "../../helper/pick";
+import status from "http-status";
 
 const createAppointment = catchAsync(async (req: Request & { user?: IJWTPayload }, res: Response) => {
   const result = await AppointmentService.createAppointment(req.user as IJWTPayload, req.body);
@@ -31,4 +32,32 @@ const updateAppointmentStatus = catchAsync(async (req: Request & { user?: IJWTPa
   sendResponse(res, { status: 200, success: true, message: "Appointment updated successfully!", data: result });
 });
 
-export const AppointmentController = { createAppointment, getMyAppointment, updateAppointmentStatus };
+const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
+  const filters = pick(req.query, ["status", "paymentStatus", "patientEmail", "doctorEmail"]);
+  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+
+  const result = await AppointmentService.getAllFromDB(filters, options);
+
+  sendResponse(res, {
+    status: status.OK,
+    success: true,
+    message: "Appointment retrieval successfully",
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
+const cancelUnpaidAppointments = catchAsync(async (req: Request, res: Response) => {
+
+  const result = await AppointmentService.cancelUnpaidAppointments()
+
+  sendResponse(res, { status: status.OK, success: true, message: "Appointment cancel successfully", data: result });
+});
+
+export const AppointmentController = {
+  createAppointment,
+  getMyAppointment,
+  updateAppointmentStatus,
+  getAllFromDB,
+  cancelUnpaidAppointments,
+};
