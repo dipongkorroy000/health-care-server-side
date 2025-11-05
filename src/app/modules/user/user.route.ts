@@ -36,4 +36,8 @@ router.post(
   }
 );
 
+router.get("/me", auth(UserRole.ADMIN, UserRole.DOCTOR, UserRole.PATIENT), UserController.getMyProfile);
+
+router.patch("/:id/status", auth(UserRole.ADMIN), UserController.changeProfileStatus);
+
 export const userRoutes = router;
