@@ -32,4 +32,5 @@ export default {
     email: process.env.EMAIL,
     app_pass: process.env.APP_PASS,
   },
+  client_url: process.env.CLIENT_URL as string
 };

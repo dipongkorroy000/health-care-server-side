@@ -11,7 +11,7 @@ import { AppointmentService } from "./app/modules/appointment/appointment.servic
 
 const app: Application = express();
 
-app.use(cors());
+app.use(cors({ origin: config.client_url, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 
