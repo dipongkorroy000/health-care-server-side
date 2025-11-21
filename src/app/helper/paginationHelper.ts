@@ -1,8 +1,8 @@
-export type IOptions = { page?: string | number; limit?: string | number; sortBy?: string; sortOrder?: string };
+export type IPaginationOptions = { page?: string | number; limit?: string | number; sortBy?: string; sortOrder?: string };
 
 export type IOptionsResult = { page: number; limit: number; sortBy: string; sortOrder: string };
 
-const calculatePagination = (options: IOptions) : IOptionsResult => {
+const calculatePagination = (options: IPaginationOptions) : IOptionsResult => {
   const page: number = Number(options.page) || 1;
   const limit: number = Number(options.limit) || 10;
 

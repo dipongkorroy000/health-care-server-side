@@ -24,7 +24,7 @@ const getAllUser = catchAsync(async (req: Request, res: Response) => {
 const createDoctor = catchAsync(async (req: Request, res: Response) => {
   const result = await UserService.createDoctor(req.body, req.file);
 
-  sendResponse(res, { status: 201, success: true, message: "Doctor Created successfuly!", data: result });
+  sendResponse(res, { status: 201, success: true, message: "Doctor Created successfully!", data: result });
 });
 
 const createAdmin = catchAsync(async (req: Request, res: Response) => {

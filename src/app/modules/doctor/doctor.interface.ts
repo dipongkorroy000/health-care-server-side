@@ -1,4 +1,4 @@
-import { Gender } from "@prisma/client";
+import {Gender} from "@prisma/client";
 
 export type IDoctorUpdateInput = {
   email: string;
@@ -13,8 +13,19 @@ export type IDoctorUpdateInput = {
   currentWorkingPlace: string;
   designation: string;
   isDeleted: boolean;
-  specialties: {
-    specialtyId: string;
-    isDeleted?: boolean;
-  }[];
+  specialties?: string[]; // Array of specialty IDs to add
+  removeSpecialties?: string[]; // Array of specialty IDs to remove
+};
+
+export type IDoctorFilterRequest = {
+  searchTerm?: string | undefined;
+  email?: string | undefined;
+  contactNumber?: string | undefined;
+  gender?: string | undefined;
+  specialties?: string | undefined;
+};
+
+export type ISpecialties = {
+  specialtiesId: string;
+  isDeleted?: null;
 };

@@ -20,6 +20,7 @@ export type createDoctorInput = {
     qualification: string;
     currentWorkingPlace: string;
     designation: string;
+    specialties: string[];
   };
 };
 
