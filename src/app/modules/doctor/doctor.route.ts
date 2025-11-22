@@ -9,7 +9,7 @@ router.get("/", DoctorController.getAllFromDB);
 
 router.get("/:id", DoctorController.getByIdFromDB);
 
-router.patch("/:id", auth(UserRole.DOCTOR), DoctorController.updateIntoDB);
+router.patch("/:id", auth(UserRole.DOCTOR, UserRole.ADMIN), DoctorController.updateIntoDB);
 
 router.delete("/:id", auth(UserRole.ADMIN), DoctorController.deleteFromDB);
 

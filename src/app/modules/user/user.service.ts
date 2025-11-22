@@ -67,12 +67,12 @@ const createDoctor = async (payload: createDoctorInput, file: Express.Multer.Fil
 
   const hashedPassword: string = await bcryptjs.hash(payload.password, 10);
   // update this
-  const specialties = payload.doctor.specialties;
+  const {specialties, ...doctorData} = payload.doctor;
 
   const result = await prisma.$transaction(async (tnx) => {
     await tnx.user.create({data: {email: payload.doctor.email, password: hashedPassword, role: UserRole.DOCTOR}});
 
-    const createdDoctorData = await tnx.doctor.create({data: payload.doctor});
+    const createdDoctorData = await tnx.doctor.create({data: doctorData});
 
     // Step 3: Create doctor specialties if provided
     if (specialties && Array.isArray(specialties) && specialties.length > 0) {
