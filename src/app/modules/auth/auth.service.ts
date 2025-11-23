@@ -1,5 +1,4 @@
 import {UserStatus} from "@prisma/client";
-import {prisma} from "../../shared/prisma";
 import {Login} from "./auth.interface";
 import bcrypt from "bcryptjs";
 import {jwtHelper} from "../../helper/genarateToken";
@@ -8,6 +7,7 @@ import httpStatus from "http-status";
 import config from "../../../config";
 import {Secret} from "jsonwebtoken";
 import emailSender from "./emailSender";
+import prisma from "../../shared/prisma";
 
 const login = async (payload: Login) => {
   const user = await prisma.user.findUnique({where: {email: payload.email, status: UserStatus.ACTIVE}});

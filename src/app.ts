@@ -10,19 +10,20 @@ import { PaymentController } from "./app/modules/payments/payment.controller";
 import { AppointmentService } from "./app/modules/appointment/appointment.service";
 
 const app: Application = express();
-
+// parser
 app.use(cors({ origin: config.client_url, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
 
-cron.schedule("* * * * *", () => {
-  try {
-    console.log("Node cron called at ", new Date());
-    AppointmentService.cancelUnpaidAppointments();
-  } catch (error) {
-    console.log(error);
-  }
-});
+// cron.schedule("* * * * *", () => {
+//   try {
+//     console.log("Node cron called at ", new Date());
+//     AppointmentService.cancelUnpaidAppointments();
+//   } catch (error) {
+//     console.log(error);
+//   }
+// });
 
 // this webhook call -> when appointment create by patient then call this webhook for payment
 app.post("/api/v1/payment/webhook", express.raw({ type: "application/json" }), PaymentController.handleStripeWebhookEvent);

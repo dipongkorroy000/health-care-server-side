@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import path from "path";
 
-dotenv.config({ path: path.join(process.cwd(), ".env") });
+dotenv.config({path: path.join(process.cwd(), ".env")});
 
 export default {
   node_env: process.env.NODE_ENV,
@@ -32,5 +32,9 @@ export default {
     email: process.env.EMAIL,
     app_pass: process.env.APP_PASS,
   },
-  client_url: process.env.CLIENT_URL as string
+  client_url: process.env.CLIENT_URL as string,
+
+  super_admin: process.env.SUPER_EMAIL as string,
+  super_admin_pass: process.env.SUPER_EMAIL_PASS as string,
+  super_admin_contact: process.env.SUPER_ADMIN_CONTACT as string,
 };

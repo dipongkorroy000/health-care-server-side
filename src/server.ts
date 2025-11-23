@@ -1,15 +1,18 @@
-import http, { Server } from "http";
+import http, {Server} from "http";
 import app from "./app";
 import config from "./config";
+import seedSuperAdmin from "./app/helper/seed";
 
 let server: Server | null = null;
 
 async function startServer() {
   try {
+    // Seed super admin
+    await seedSuperAdmin();
+
+    // Start the server
     server = http.createServer(app);
-    server.listen(config.port, () => {
-      console.log(`🚀 Server is running on port ${config.port}`);
-    });
+    server.listen(config.port, () => console.log(`🚀 Server is running on port ${config.port}`));
 
     handleProcessEvents();
   } catch (error) {
@@ -37,9 +40,7 @@ async function gracefulShutdown(signal: string) {
 
       process.exit(0);
     });
-  } else {
-    process.exit(0);
-  }
+  } else process.exit(0);
 }
 
 /**
