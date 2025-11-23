@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../shared/prisma";
 import { IJWTPayload } from "../../types/reqUser";
-import { IOptions, paginationHelper } from "../../helper/paginationHelper";
+import { IPaginationOptions, paginationHelper } from "../../helper/paginationHelper";
 import ApiError from "../../errors/apiError";
 import status from "http-status";
 
@@ -13,7 +13,7 @@ const insertIntoDB = async (user: IJWTPayload, payload: { scheduleIds: string[] 
   return await prisma.doctorSchedules.createMany({ data: doctorScheduleData });
 };
 
-const getMySchedule = async (filters: any, options: IOptions, user: IJWTPayload) => {
+const getMySchedule = async (filters: any, options: IPaginationOptions, user: IJWTPayload) => {
   const { limit, page } = paginationHelper.calculatePagination(options);
   const { startDate, endDate, ...filterData } = filters;
 
@@ -63,7 +63,7 @@ const deleteFromDB = async (user: IJWTPayload, scheduleId: string) => {
   return await prisma.doctorSchedules.delete({ where: { doctorId_scheduleId: { doctorId: doctorData.id, scheduleId: scheduleId } } });
 };
 
-const getAllFromDB = async (filters: any, options: IOptions) => {
+const getAllFromDB = async (filters: any, options: IPaginationOptions) => {
   const { limit, page } = paginationHelper.calculatePagination(options);
   const { searchTerm, ...filterData } = filters;
   const andConditions = [];

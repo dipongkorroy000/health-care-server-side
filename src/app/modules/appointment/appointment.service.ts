@@ -3,7 +3,7 @@ import { stripe } from "../../helper/stripe";
 import { prisma } from "../../shared/prisma";
 // import { v4 as uuidv4 } from "uuid";
 import { IJWTPayload } from "../../types/reqUser";
-import { IOptions, paginationHelper } from "../../helper/paginationHelper";
+import { IPaginationOptions, paginationHelper } from "../../helper/paginationHelper";
 import ApiError from "../../errors/apiError";
 import httpStatus from "http-status";
 
@@ -59,7 +59,7 @@ const createAppointment = async (user: IJWTPayload, payload: { doctorId: string;
   return result;
 };
 
-const getMyAppointment = async (user: IJWTPayload, filters: any, options: IOptions) => {
+const getMyAppointment = async (user: IJWTPayload, filters: any, options: IPaginationOptions) => {
   const { page, limit, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
   const { ...filterData } = filters;
 
@@ -101,7 +101,7 @@ const updateAppointmentStatus = async (appointmentId: string, status: Appointmen
   return await prisma.appointment.update({ where: { id: appointmentId }, data: { status } });
 };
 
-const getAllFromDB = async (filters: any, options: IOptions) => {
+const getAllFromDB = async (filters: any, options: IPaginationOptions) => {
   const { limit, page } = paginationHelper.calculatePagination(options);
   const { patientEmail, doctorEmail, ...filterData } = filters;
 

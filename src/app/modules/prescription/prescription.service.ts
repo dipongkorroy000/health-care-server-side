@@ -1,14 +1,14 @@
-import { AppointmentStatus, PaymentStatus, Prescription, UserRole } from "@prisma/client";
-import { prisma } from "../../shared/prisma";
+import {AppointmentStatus, PaymentStatus, Prescription, UserRole} from "@prisma/client";
+import {prisma} from "../../shared/prisma";
 import httpStatus from "http-status";
 import ApiError from "../../errors/apiError";
-import { IJWTPayload } from "../../types/reqUser";
-import { IOptions, paginationHelper } from "../../helper/paginationHelper";
+import {IJWTPayload} from "../../types/reqUser";
+import {IPaginationOptions, paginationHelper} from "../../helper/paginationHelper";
 
 const createPrescription = async (user: IJWTPayload, payload: Partial<Prescription>) => {
   const appointmentData = await prisma.appointment.findUniqueOrThrow({
-    where: { id: payload.appointmentId as string, status: AppointmentStatus.COMPLETED, paymentStatus: PaymentStatus.PAID },
-    include: { doctor: true },
+    where: {id: payload.appointmentId as string, status: AppointmentStatus.COMPLETED, paymentStatus: PaymentStatus.PAID},
+    include: {doctor: true},
   });
 
   if (user.role === UserRole.DOCTOR) {
@@ -23,26 +23,26 @@ const createPrescription = async (user: IJWTPayload, payload: Partial<Prescripti
       instructions: payload.instructions as string,
       followUpDate: payload.followUpDate || null,
     },
-    include: { patient: true },
+    include: {patient: true},
   });
 };
 
-const patientPrescription = async (user: IJWTPayload, options: IOptions) => {
-  const { limit, page, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
+const patientPrescription = async (user: IJWTPayload, options: IPaginationOptions) => {
+  const {limit, page, sortBy, sortOrder} = paginationHelper.calculatePagination(options);
 
   const result = await prisma.prescription.findMany({
-    where: { patient: { email: user.email } },
+    where: {patient: {email: user.email}},
     skip: (page - 1) * limit,
     take: limit,
-    orderBy: { [sortBy]: sortOrder },
-    include: { doctor: true, patient: true, appointment: true },
+    orderBy: {[sortBy]: sortOrder},
+    include: {doctor: true, patient: true, appointment: true},
   });
 
-  const total = await prisma.prescription.count({ where: { patient: { email: user.email } } });
+  const total = await prisma.prescription.count({where: {patient: {email: user.email}}});
 
-  return { meta: { total, page, limit }, data: result };
+  return {meta: {total, page, limit}, data: result};
 };
 
 // get my prescription as a patient
 
-export const PrescriptionService = { createPrescription, patientPrescription };
+export const PrescriptionService = {createPrescription, patientPrescription};

@@ -1,6 +1,6 @@
 import { addMinutes, addHours, format } from "date-fns";
 import { prisma } from "../../shared/prisma";
-import { IOptions, paginationHelper } from "../../helper/paginationHelper";
+import { IPaginationOptions, paginationHelper } from "../../helper/paginationHelper";
 import { Prisma } from "@prisma/client";
 import { IJWTPayload } from "../../types/reqUser";
 
@@ -52,7 +52,7 @@ const insertIntoDB = async (payload: any) => {
   return schedules;
 };
 
-const schedulesForDoctor = async (user: IJWTPayload, filters: any, options: IOptions) => {
+const schedulesForDoctor = async (user: IJWTPayload, filters: any, options: IPaginationOptions) => {
   const { page, limit, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
 
   const { startDateTime: filterStartDateTime, endDateTime: filterEndDateTime } = filters;

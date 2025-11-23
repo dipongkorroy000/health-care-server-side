@@ -3,7 +3,7 @@ import status from "http-status";
 import { IJWTPayload } from "../../types/reqUser";
 import ApiError from "../../errors/apiError";
 import { Prisma } from "@prisma/client";
-import { IOptions, paginationHelper } from "../../helper/paginationHelper";
+import {  IPaginationOptions, paginationHelper } from "../../helper/paginationHelper";
 
 const insertIntoDB = async (user: IJWTPayload, payload: any) => {
   const patientData = await prisma.patient.findUniqueOrThrow({ where: { email: user.email } });
@@ -33,7 +33,7 @@ const insertIntoDB = async (user: IJWTPayload, payload: any) => {
   });
 };
 
-const getAllFromDB = async (filters: any, options: IOptions) => {
+const getAllFromDB = async (filters: any, options: IPaginationOptions) => {
   const { limit, page } = paginationHelper.calculatePagination(options);
   const { patientEmail, doctorEmail } = filters;
   const andConditions = [];
