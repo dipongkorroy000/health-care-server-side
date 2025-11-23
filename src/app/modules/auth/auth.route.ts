@@ -11,7 +11,7 @@ router.get("/me", AuthController.getMe);
 
 router.post("/refresh-token", AuthController.refreshToken);
 
-router.post("/change-password", auth(UserRole.ADMIN, UserRole.DOCTOR, UserRole.PATIENT), AuthController.changePassword);
+router.post("/change-password", auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.DOCTOR, UserRole.PATIENT), AuthController.changePassword);
 
 router.post("/reset-password", AuthController.resetPassword);
 

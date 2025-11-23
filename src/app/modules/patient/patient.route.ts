@@ -1,11 +1,11 @@
-import express, { Router } from "express";
-import { PatientController } from "./patient.controller";
+import express, {Router} from "express";
+import {PatientController} from "./patient.controller";
 import auth from "../../middlewares/auth";
-import { UserRole } from "@prisma/client";
+import {UserRole} from "@prisma/client";
 
 const router: Router = express.Router();
 
-router.get("/", auth(UserRole.ADMIN), PatientController.getAllFromDB);
+router.get("/", auth(UserRole.SUPER_ADMIN, UserRole.ADMIN), PatientController.getAllFromDB);
 
 router.get("/:id", PatientController.getByIdFromDB);
 

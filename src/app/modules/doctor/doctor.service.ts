@@ -1,6 +1,6 @@
 import {Doctor, Prisma, UserStatus} from "@prisma/client";
 import {IPaginationOptions, paginationHelper} from "../../helper/paginationHelper";
-import {prisma} from "../../shared/prisma";
+import prisma from "../../shared/prisma";
 import {IDoctorFilterRequest, IDoctorUpdateInput} from "./doctor.interface";
 import ApiError from "../../errors/apiError";
 import status from "http-status";
