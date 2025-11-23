@@ -146,4 +146,25 @@ const changeProfileStatus = async (id: string, payload: {status: UserStatus}) =>
   return await prisma.user.update({where: {id}, data: payload});
 };
 
-export const UserService = {createPatient, getAllUser, createDoctor, createAdmin, getMyProfile, changeProfileStatus};
+const updateMyProfile = async (user: IJWTPayload, payload: any, file: Express.Multer.File | undefined) => {
+  const userInfo = await prisma.user.findUniqueOrThrow({where: {email: user?.email, status: UserStatus.ACTIVE}});
+
+  if (file) {
+    const uploadToCloudinary = await fileUploader.uploadToCloudinary(file);
+    payload.profilePhoto = uploadToCloudinary?.secure_url;
+  }
+
+  let profileInfo;
+
+  if (userInfo.role === UserRole.ADMIN) {
+    profileInfo = await prisma.admin.update({where: {email: userInfo.email}, data: payload});
+  } else if (userInfo.role === UserRole.DOCTOR) {
+    profileInfo = await prisma.doctor.update({where: {email: userInfo.email}, data: payload});
+  } else if (userInfo.role === UserRole.PATIENT) {
+    profileInfo = await prisma.patient.update({where: {email: userInfo.email}, data: payload});
+  }
+
+  return {...profileInfo};
+};
+
+export const UserService = {createPatient, getAllUser, createDoctor, createAdmin, getMyProfile, changeProfileStatus, updateMyProfile};
