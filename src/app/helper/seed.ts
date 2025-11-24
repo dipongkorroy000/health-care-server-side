@@ -5,7 +5,7 @@ import config from "../../config";
 
 const seedSuperAdmin = async () => {
   try {
-    const isExistSuperAdmin = await prisma.user.findFirst({where: {role: UserRole.SUPER_ADMIN}});
+    const isExistSuperAdmin = await prisma.user.findUnique({where: {email: config.super_admin}});
 
     if (isExistSuperAdmin) console.log("Super admin already exists!");
     if (isExistSuperAdmin) return;
@@ -16,7 +16,7 @@ const seedSuperAdmin = async () => {
       data: {
         email: config.super_admin,
         password: hashedPassword,
-        role: UserRole.SUPER_ADMIN,
+        role: UserRole.ADMIN,
         admin: {
           create: {
             name: "Super Admin",

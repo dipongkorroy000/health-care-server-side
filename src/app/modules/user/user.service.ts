@@ -1,10 +1,11 @@
 import {Prisma, UserRole, UserStatus} from "@prisma/client";
 import {fileUploader} from "../../helper/fileUploader";
 import {IPaginationOptions, paginationHelper} from "../../helper/paginationHelper";
-import {prisma} from "../../shared/prisma";
+
 import {createAdminInput, createDoctorInput, createPatientInput} from "./user.interface";
 import bcryptjs from "bcryptjs";
 import {IJWTPayload} from "../../types/reqUser";
+import prisma from "../../shared/prisma";
 
 const createPatient = async (payload: createPatientInput, file: Express.Multer.File | undefined) => {
   if (file) {
@@ -14,10 +15,10 @@ const createPatient = async (payload: createPatientInput, file: Express.Multer.F
 
   const hashPass = await bcryptjs.hash(payload.password, 10);
 
-  const result = await prisma.$transaction(async (transaction) => {
-    await transaction.user.create({data: {email: payload.patient.email, password: hashPass}});
+  const result = await prisma.$transaction(async (tnx) => {
+    await tnx.user.create({data: {email: payload.patient.email, password: hashPass}});
 
-    return await transaction.patient.create({data: payload.patient});
+    return await tnx.patient.create({data: payload.patient});
   });
 
   return result;

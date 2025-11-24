@@ -57,7 +57,7 @@ const getMe = catchAsync(async (req: Request, res: Response) => {
 
   const result = await AuthService.getMe(userSession);
 
-  sendResponse(res, { status: httpStatus.OK, success: true, message: "User retrive successfully!", data: result });
+  sendResponse(res, { status: httpStatus.OK, success: true, message: "User retrieve successfully!", data: result });
 });
 
 export const AuthController = { login, refreshToken, changePassword, resetPassword, getMe, forgotPassword };

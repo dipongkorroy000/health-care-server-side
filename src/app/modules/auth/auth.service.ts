@@ -110,7 +110,7 @@ const resetPassword = async (token: string, payload: {id: string; password: stri
   const password = await bcrypt.hash(payload.password, Number(config.salt_round));
 
   // update into database
-  await prisma.user.update({where: {id: payload.id}, data: {password}});
+  await prisma.user.update({where: {id: payload.id}, data: {password, needPasswordChange: false}});
 };
 
 const getMe = async (session: any) => {
