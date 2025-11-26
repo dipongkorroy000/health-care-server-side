@@ -33,9 +33,9 @@ app.use("/api/v1", router);
 app.get("/", (req, res) => {
   res.send({
     message: "Server is running",
-    environment: config.node_env,
-    uptime: process.uptime().toFixed(2) + "sec",
-    timeStamp: new Date().toISOString(),
+    // environment: config.node_env,
+    // uptime: process.uptime().toFixed(2) + "sec",
+    // timeStamp: new Date().toISOString(),
   });
 });
 

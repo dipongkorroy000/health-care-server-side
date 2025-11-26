@@ -37,6 +37,7 @@ const login = async (payload: Login) => {
 
 const refreshToken = async (token: string) => {
   let decodedData;
+
   try {
     decodedData = jwtHelper.verifyToken(token, config.jwt.refresh_token_secret as Secret);
   } catch (err) {
@@ -45,14 +46,16 @@ const refreshToken = async (token: string) => {
 
   const userData = await prisma.user.findUniqueOrThrow({where: {email: decodedData.email, status: UserStatus.ACTIVE}});
 
-  const accessToken = jwtHelper.generateToken({
+  const accessToken = jwtHelper.generateToken({email: userData.email, role: userData.role, secret: config.jwt.jwt_secret, expireIn: config.jwt.expires_in});
+
+  const refreshToken = jwtHelper.generateToken({
     email: userData.email,
     role: userData.role,
-    secret: config.jwt.jwt_secret,
-    expireIn: config.jwt.expires_in,
+    secret: config.jwt.refresh_token_secret,
+    expireIn: config.jwt.refresh_token_expires_in,
   });
 
-  return {accessToken, needPasswordChange: userData.needPasswordChange};
+  return {accessToken, refreshToken, needPasswordChange: userData.needPasswordChange};
 };
 
 const changePassword = async (user: any, payload: any) => {

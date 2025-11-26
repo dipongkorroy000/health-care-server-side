@@ -19,7 +19,7 @@ const getMyAppointment = catchAsync(async (req: Request & { user?: IJWTPayload }
 
   const result = await AppointmentService.getMyAppointment(user as IJWTPayload, filters, options);
 
-  sendResponse(res, { status: 200, success: true, message: "Appointment fetched successfully!", data: result });
+  sendResponse(res, { status: 200, success: true, message: "Appointment fetched successfully!", data: result.data, meta: result.meta });
 });
 
 const updateAppointmentStatus = catchAsync(async (req: Request & { user?: IJWTPayload }, res: Response) => {

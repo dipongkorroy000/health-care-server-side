@@ -17,6 +17,8 @@ const getMySchedule = async (filters: any, options: IPaginationOptions, user: IJ
   const {limit, page} = paginationHelper.calculatePagination(options);
   const {startDate, endDate, ...filterData} = filters;
 
+  const doctor = await prisma.doctor.findUniqueOrThrow({where: {email: user.email}});
+
   const andConditions = [];
 
   if (startDate && endDate) {
@@ -30,22 +32,21 @@ const getMySchedule = async (filters: any, options: IPaginationOptions, user: IJ
     else if (typeof filterData.isBooked === "string" && filterData.isBooked === "false") filterData.isBooked = false;
 
     andConditions.push({
-      AND: Object.keys(filterData).map((key) => {
-        return {[key]: {equals: (filterData as any)[key]}};
-      }),
+      AND: Object.keys(filterData).map((key) => ({[key]: {equals: (filterData as any)[key]}})),
     });
   }
 
   const whereConditions: Prisma.DoctorSchedulesWhereInput = andConditions.length > 0 ? {AND: andConditions} : {};
-
+console.log(options.sortBy, options.sortOrder);
   const result = await prisma.doctorSchedules.findMany({
-    where: whereConditions,
+    where: {doctorId: doctor.id, ...whereConditions},
     skip: (page - 1) * limit,
     take: limit,
-    orderBy: options.sortBy && options.sortOrder ? {[options.sortBy]: options.sortOrder} : {},
+    // orderBy: options.sortBy && options.sortOrder ? {[options.sortBy]: options.sortOrder} : {},
+    include: {schedule: true},
   });
 
-  const total = await prisma.doctorSchedules.count({where: whereConditions});
+  const total = await prisma.doctorSchedules.count({where: {doctorId: doctor.id, ...whereConditions}});
 
   return {meta: {total, page, limit}, data: result};
 };

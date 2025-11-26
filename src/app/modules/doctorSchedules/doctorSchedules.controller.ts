@@ -29,7 +29,7 @@ const getMySchedule = catchAsync(async (req: Request & { user?: IJWTPayload }, r
     status: status.OK,
     success: true,
     message: "My Schedule fetched successfully!",
-    data: result,
+    data: result.data,
   });
 });
 
