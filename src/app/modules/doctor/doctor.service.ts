@@ -48,7 +48,11 @@ const getAllFromDB = async (filters: IDoctorFilterRequest, options: IPaginationO
     skip: (page - 1) * limit,
     take: limit,
     orderBy: {[sortBy]: sortOrder},
-    include: {doctorSpecialties: {include: {specialties: true}}}, // doctor specialties showing
+    include: {
+      doctorSpecialties: {include: {specialties: true}},
+      doctorSchedules: {include: {schedule: true}},
+      reviews: true,
+    },
   });
 
   const total = await prisma.doctor.count({where: whereConditions});
