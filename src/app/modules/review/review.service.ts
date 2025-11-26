@@ -1,9 +1,10 @@
-import { prisma } from "../../shared/prisma";
+
 import status from "http-status";
 import { IJWTPayload } from "../../types/reqUser";
 import ApiError from "../../errors/apiError";
 import { Prisma } from "@prisma/client";
 import {  IPaginationOptions, paginationHelper } from "../../helper/paginationHelper";
+import prisma from "../../shared/prisma";
 
 const insertIntoDB = async (user: IJWTPayload, payload: any) => {
   const patientData = await prisma.patient.findUniqueOrThrow({ where: { email: user.email } });

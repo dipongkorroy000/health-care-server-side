@@ -1,7 +1,7 @@
 import {AppointmentStatus, PaymentStatus, Prisma, UserRole} from "@prisma/client";
 import {stripe} from "../../helper/stripe";
 import prisma from "../../shared/prisma";
-// import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import {IJWTPayload} from "../../types/reqUser";
 import {IPaginationOptions, paginationHelper} from "../../helper/paginationHelper";
 import ApiError from "../../errors/apiError";
@@ -14,11 +14,11 @@ const createAppointment = async (user: IJWTPayload, payload: {doctorId: string; 
 
   await prisma.doctorSchedules.findFirstOrThrow({where: {doctorId: payload.doctorId, scheduleId: payload.scheduleId, isBooked: false}});
 
-  // const videoCallingId = uuidv4();
+  const videoCallingId = uuidv4();
 
   const result = await prisma.$transaction(async (tnx) => {
     const appointmentData = await tnx.appointment.create({
-      data: {patientId: patientData.id, doctorId: doctorData.id, scheduleId: payload.scheduleId, videoCallingId: "demo12"},
+      data: {patientId: patientData.id, doctorId: doctorData.id, scheduleId: payload.scheduleId, videoCallingId: videoCallingId},
     });
 
     await tnx.doctorSchedules.update({
@@ -26,9 +26,9 @@ const createAppointment = async (user: IJWTPayload, payload: {doctorId: string; 
       data: {isBooked: true},
     });
 
-    // const transactionId = uuidv4();
+    const transactionId = uuidv4();
 
-    await tnx.payment.create({data: {appointmentId: appointmentData.id, amount: doctorData.appointmentFee, transactionId: "demo1234"}});
+    await tnx.payment.create({data: {appointmentId: appointmentData.id, amount: doctorData.appointmentFee, transactionId: transactionId}});
 
     // payment
     const session = await stripe.checkout.sessions.create({
@@ -81,7 +81,10 @@ const getMyAppointment = async (user: IJWTPayload, filters: any, options: IPagin
     skip: (page - 1) * limit,
     take: limit,
     orderBy: {[sortBy]: sortOrder},
-    include: user.role === UserRole.DOCTOR ? {patient: true} : {doctor: true},
+    include:
+      user.role === UserRole.DOCTOR
+        ? {patient: {include: {medicalReports: true, patientHealthData: true}}, schedule: true, prescription: true, review: true}
+        : {doctor: true, schedule: true, review: true, prescription: true},
   });
 
   const total = await prisma.appointment.count({where: whereConditions});
@@ -92,13 +95,15 @@ const getMyAppointment = async (user: IJWTPayload, filters: any, options: IPagin
 // task get all data from db (appointment data)- admin
 
 const updateAppointmentStatus = async (appointmentId: string, status: AppointmentStatus, user: IJWTPayload) => {
-  const appointmentData = await prisma.appointment.findUniqueOrThrow({where: {id: appointmentId}, include: {doctor: true}});
+  const appointmentData = await prisma.appointment.findUnique({where: {id: appointmentId}, include: {doctor: true}});
+  if (!appointmentData) throw new ApiError(httpStatus.NOT_FOUND, "Appointment not found");
 
   if (user.role === UserRole.DOCTOR) {
     if (!(user.email === appointmentData.doctor.email)) throw new ApiError(httpStatus.BAD_REQUEST, "This is not your appointment");
   }
+  const result = await prisma.appointment.update({where: {id: appointmentId}, data: {status: status}});
 
-  return await prisma.appointment.update({where: {id: appointmentId}, data: {status}});
+  return result;
 };
 
 const getAllFromDB = async (filters: any, options: IPaginationOptions) => {

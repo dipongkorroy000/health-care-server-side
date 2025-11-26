@@ -1,20 +1,18 @@
-import { Request, Response } from "express";
+import {Request, Response} from "express";
 import catchAsync from "../../shared/catchAsync";
-import { PrescriptionService } from "./prescription.service";
+import {PrescriptionService} from "./prescription.service";
 import sendResponse from "../../shared/sendResponse";
-import { IJWTPayload } from "../../types/reqUser";
+import {IJWTPayload} from "../../types/reqUser";
 import pick from "../../helper/pick";
 import status from "http-status";
 
-const createPrescription = catchAsync(async (req: Request & { user?: IJWTPayload }, res: Response) => {
-  const user = req.user;
+const createPrescription = catchAsync(async (req: Request & {user?: IJWTPayload}, res: Response) => {
+  const result = await PrescriptionService.createPrescription(req.user as IJWTPayload, req.body);
 
-  const result = await PrescriptionService.createPrescription(user as IJWTPayload, req.body);
-
-  sendResponse(res, { status: 201, success: true, message: "prescription created successfully!", data: result });
+  sendResponse(res, {status: 201, success: true, message: "prescription created successfully!", data: result});
 });
 
-const patientPrescription = catchAsync(async (req: Request & { user?: IJWTPayload }, res: Response) => {
+const patientPrescription = catchAsync(async (req: Request & {user?: IJWTPayload}, res: Response) => {
   const user = req.user;
   const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
   const result = await PrescriptionService.patientPrescription(user as IJWTPayload, options);
@@ -27,4 +25,4 @@ const patientPrescription = catchAsync(async (req: Request & { user?: IJWTPayloa
   });
 });
 
-export const PrescriptionController = { createPrescription, patientPrescription };
+export const PrescriptionController = {createPrescription, patientPrescription};

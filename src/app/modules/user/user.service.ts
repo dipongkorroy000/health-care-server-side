@@ -16,7 +16,7 @@ const createPatient = async (payload: createPatientInput, file: Express.Multer.F
   const hashPass = await bcryptjs.hash(payload.password, 10);
 
   const result = await prisma.$transaction(async (tnx) => {
-    await tnx.user.create({data: {email: payload.patient.email, password: hashPass}});
+    await tnx.user.create({data: {email: payload.patient.email, password: hashPass, needPasswordChange: false}});
 
     return await tnx.patient.create({data: payload.patient});
   });

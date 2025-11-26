@@ -1,9 +1,10 @@
 import {AppointmentStatus, PaymentStatus, Prescription, UserRole} from "@prisma/client";
-import {prisma} from "../../shared/prisma";
+
 import httpStatus from "http-status";
 import ApiError from "../../errors/apiError";
 import {IJWTPayload} from "../../types/reqUser";
 import {IPaginationOptions, paginationHelper} from "../../helper/paginationHelper";
+import prisma from "../../shared/prisma";
 
 const createPrescription = async (user: IJWTPayload, payload: Partial<Prescription>) => {
   const appointmentData = await prisma.appointment.findUniqueOrThrow({
