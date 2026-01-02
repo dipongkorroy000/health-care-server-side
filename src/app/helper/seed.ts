@@ -1,0 +1,38 @@
+import {UserRole} from "@prisma/client";
+import * as bcrypt from "bcryptjs";
+import prisma from "../shared/prisma";
+import config from "../../config";
+
+const seedSuperAdmin = async () => {
+  try {
+    const isExistSuperAdmin = await prisma.user.findUnique({where: {email: config.super_admin}});
+
+    if (isExistSuperAdmin) console.log("Super admin already exists!");
+    if (isExistSuperAdmin) return;
+
+    const hashedPassword = await bcrypt.hash(config.super_admin_pass, Number(config.salt_round));
+
+    const superAdminData = await prisma.user.create({
+      data: {
+        email: config.super_admin,
+        password: hashedPassword,
+        role: UserRole.ADMIN,
+        admin: {
+          create: {
+            name: "Super Admin",
+            //email: "super@admin.com",
+            contactNumber: config.super_admin_pass,
+          },
+        },
+      },
+    });
+
+    console.log("Super Admin Created Successfully!", superAdminData);
+  } catch (err) {
+    console.error(err);
+  } finally {
+    await prisma.$disconnect();
+  }
+};
+
+export default seedSuperAdmin;

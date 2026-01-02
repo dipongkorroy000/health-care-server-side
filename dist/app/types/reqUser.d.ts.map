@@ -1,0 +1,1 @@
+{"version":3,"file":"reqUser.d.ts","sourceRoot":"","sources":["../../../src/app/types/reqUser.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,QAAQ,EAAE,MAAM,gBAAgB,CAAC;AAE1C,MAAM,MAAM,WAAW,GAAG;IACxB,KAAK,EAAE,MAAM,CAAC;IACd,IAAI,EAAE,QAAQ,CAAC;CAChB,CAAC"}

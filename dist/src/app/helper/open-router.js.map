@@ -1,0 +1,1 @@
+{"version":3,"file":"open-router.js","sourceRoot":"","sources":["../../../../src/app/helper/open-router.ts"],"names":[],"mappings":";;;;;;AAAA,oDAA4B;AAC5B,0DAAkC;AAErB,QAAA,MAAM,GAAG,IAAI,gBAAM,CAAC;IAC/B,OAAO,EAAE,8BAA8B;IACvC,MAAM,EAAE,gBAAM,CAAC,mBAAmB;IAClC,cAAc,EAAE;QACd,cAAc,EAAE,iBAAiB,EAAE,oDAAoD;QACvF,SAAS,EAAE,kBAAkB,EAAE,sDAAsD;KACtF;CACF,CAAC,CAAC"}
